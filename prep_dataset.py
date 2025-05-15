@@ -407,6 +407,11 @@ def flagOutliers(df: pd.DataFrame) ->pd.DataFrame:
   outlier_summary = df_outliers_combined.sum()
   print(outlier_summary[outlier_summary > 0])
 
+  if (outlier_summary > 0).any().any():
+    total_outliers = (outlier_summary > 0).sum().sum()
+    print(f"Total outliers detected: {total_outliers}")
+    sys.exit("Error – outliers detected in the dataset.")
+
   param_list = [
     'Generator RPM Max.',
     'Generator RPM Min.',
@@ -699,7 +704,7 @@ def profileData(_df: pd.DataFrame, _path: str, _name: str, _wgt_value: int):
                         interactions={"continuous": False},
                         #missing_diagrams={"heatmap": False, "dendrogram": False},
                        )
-  ff = _name + str(_wgt_value).zfill(2) + '.html'
+  ff = "WT" + str(_wgt_value).zfill(2) + _name + '.html'
   f1_out = os.path.join(_path, ff)
   profile.to_file(f1_out)
 
@@ -1013,7 +1018,7 @@ def main_export(config: dict):
         print(number)  # ➡️ 1
     
       # Create the new filename
-      new_sheetname = f"WTG_{number:02}_data.csv"
+      new_sheetname = f"WT{number:02}_data.csv"
       df.to_excel(writer, index=False, sheet_name=new_sheetname)
 
     for _f1 in csv_outliers:
@@ -1027,7 +1032,7 @@ def main_export(config: dict):
         print(number)  # ➡️ 1
     
       # Create the new filename
-      new_sheetname = f"WTG_{number:02}_outliers.csv"
+      new_sheetname = f"WT{number:02}_outliers.csv"
       df.to_excel(writer, index=False, sheet_name=new_sheetname)
 
     for _f1 in csv_logs:
@@ -1042,7 +1047,7 @@ def main_export(config: dict):
         print(number)  # ➡️ 1
         
       # Create the new filename
-      new_sheetname = f"WTG_{number:02}_logs.csv"      
+      new_sheetname = f"WT{number:02}_logs.csv"      
       df.to_excel(writer, index=False, sheet_name=new_sheetname)
 
   print('start adjustXlsx - takes ages')
