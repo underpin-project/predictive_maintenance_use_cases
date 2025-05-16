@@ -1,7 +1,8 @@
 {
     "scada_data_path":  "/media/weissenfelda/3d1b1934-5bb3-4a16-a5f8-ed847970fefe1/data/underpin/Wind farms data/Wind Farm 1/2020",
 	"scada_output_path": "scada_output",
-	"scada_xlsx_filename": "SCADA_2020.xlsx",
+	"scada_xlsx_filename_data": "SCADA__monitoring_dataset_2020.xlsx",
+	"scada_xlsx_filename_outliers": "SCADA_monitoring_outliers_2020.xlsx",
 	"scada_profile_name": "_data",
 	"outlier_profile_name": "_outliers",
 	"logs_profile_name": "_logs",

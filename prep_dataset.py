@@ -995,12 +995,12 @@ def adjustXlsx(f1: str):
 
 
 def main_export(config: dict):
+  print('Export SCADA data to xlsx')  
+    
   fin = config["scada_output_path"]
-  filename = config["scada_xlsx_filename"]
+  filename = config["scada_xlsx_filename_data"]
   csv_data = sorted(glob.glob(os.path.join(fin, '*data*.csv')))
-  print(csv_data)
-  csv_outliers = sorted(glob.glob(os.path.join(fin, '*outliers*.csv')))
-  print(csv_outliers)  
+  print(csv_data) 
   csv_logs = sorted(glob.glob(os.path.join(fin, '*logs*.csv')))
   print(csv_logs)
 
@@ -1019,20 +1019,6 @@ def main_export(config: dict):
     
       # Create the new filename
       new_sheetname = f"WT{number:02}_data.csv"
-      df.to_excel(writer, index=False, sheet_name=new_sheetname)
-
-    for _f1 in csv_outliers:
-      print(_f1)
-      df = pd.read_csv(_f1, sep=',', low_memory=False)
-      
-      # Extract the numeric part between 'WTG_data_' and '.csv'
-      match = re.search(r'WTG_outliers_(\d+)\.csv', _f1)
-      if match:
-        number = int(match.group(1))
-        print(number)  # ➡️ 1
-    
-      # Create the new filename
-      new_sheetname = f"WT{number:02}_outliers.csv"
       df.to_excel(writer, index=False, sheet_name=new_sheetname)
 
     for _f1 in csv_logs:
@@ -1054,6 +1040,33 @@ def main_export(config: dict):
   adjustXlsx(f1)
 
 
+def outliers_export(config: dict):
+  print('Export Outliers to xlsx')  
+    
+  fin = config["scada_output_path"]
+  filename = config["scada_xlsx_filename_outliers"]
+  csv_outliers = sorted(glob.glob(os.path.join(fin, '*outliers*.csv')))
+  print(csv_outliers)  
+
+  # Save the DataFrame to an Excel file
+  f1 = os.path.join(fin, filename)
+  with pd.ExcelWriter(f1) as writer:
+    for _f1 in csv_outliers:
+      print(_f1)
+      df = pd.read_csv(_f1, sep=',', low_memory=False)
+      
+      # Extract the numeric part between 'WTG_data_' and '.csv'
+      match = re.search(r'WTG_outliers_(\d+)\.csv', _f1)
+      if match:
+        number = int(match.group(1))
+        print(number)  # ➡️ 1
+    
+      # Create the new filename
+      new_sheetname = f"WT{number:02}_outliers.csv"
+      df.to_excel(writer, index=False, sheet_name=new_sheetname)
+
+  print('start adjustXlsx - takes ages')
+  adjustXlsx(f1)
 
   
 if __name__ == "__main__":
@@ -1070,6 +1083,7 @@ if __name__ == "__main__":
   prep_scada_data(config)
   prep_log_data(config)
   main_export(config)
+  outliers_export(config)
   
   analysisOutliers(config)
   
